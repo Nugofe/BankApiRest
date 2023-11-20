@@ -7,6 +7,10 @@ import com.api.bankapirest.models.User;
 import com.api.bankapirest.repositories.IRoleRepository;
 import com.api.bankapirest.repositories.IUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames={"users"})
 public class UserServiceImpl implements IUserService {
 
     private final PasswordEncoder passwordEncoder;
@@ -23,26 +28,34 @@ public class UserServiceImpl implements IUserService {
     private final IRoleRepository roleRepository;
 
     @Transactional(readOnly = true)
+    @Cacheable()
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key="{ #root.methodName, #id }")
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key="{ #root.methodName, #nif }")
     public User findByNif(String nif) {
         return userRepository.findByNif(nif).orElse(null);
     }
 
     @Transactional
+    @CacheEvict(allEntries=true)
     public void save(User user) {
         userRepository.save(user);
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value="users", allEntries=true),
+            @CacheEvict(value="login", allEntries=true)
+    })
     public void delete(Long id) {
         userRepository.deleteById(id);
     }

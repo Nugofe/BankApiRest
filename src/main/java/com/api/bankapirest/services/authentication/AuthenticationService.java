@@ -6,6 +6,8 @@ import com.api.bankapirest.dtos.request.RegisterRequest;
 import com.api.bankapirest.models.User;
 import com.api.bankapirest.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class AuthenticationService {
     private final IUserService userService;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "login", key = "#request.nif")
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         // check if the user is already authenticated and stored in the database
         authenticationManager.authenticate(
@@ -36,6 +39,7 @@ public class AuthenticationService {
     }
 
     @Transactional
+    @CacheEvict(value="users", allEntries=true)
     public AuthenticationResponse register(RegisterRequest request) {
         // create the new user and store it in database
         User user = userService.buildUser(request);
