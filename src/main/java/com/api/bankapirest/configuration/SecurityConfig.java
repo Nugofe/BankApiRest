@@ -33,6 +33,8 @@ public class SecurityConfig {
                     // login and register without security
                     req.requestMatchers(API_URL_PATTERN + "/v1/auth/**").permitAll()
                     // external rest client and circuit breaker without security, just to test easily
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/v3/api-docs/**").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers(API_URL_PATTERN + "/v1/users/examples").permitAll()
                     // rest of the api with security
@@ -41,8 +43,6 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticatorProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-                //.formLogin(Customizer.withDefaults())
-                //.httpBasic(Customizer.withDefaults());
 
         return httpSecurity.build();
     }
