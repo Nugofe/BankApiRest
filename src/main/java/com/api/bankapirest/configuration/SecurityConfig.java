@@ -30,7 +30,12 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((req) -> {
+                    // login and register without security
                     req.requestMatchers(API_URL_PATTERN + "/v1/auth/**").permitAll()
+                    // external rest client and circuit breaker without security, just to test easily
+                    .requestMatchers("/actuator/**").permitAll()
+                    .requestMatchers(API_URL_PATTERN + "/v1/users/examples").permitAll()
+                    // rest of the api with security
                     .anyRequest().authenticated();
                 })
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

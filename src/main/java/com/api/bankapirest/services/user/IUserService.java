@@ -19,5 +19,7 @@ public interface IUserService {
 
     public void delete(Long id);
 
+    public Object getUserExamples() throws Throwable;
+
     public User buildUser(RegisterRequest userDTO);
 }

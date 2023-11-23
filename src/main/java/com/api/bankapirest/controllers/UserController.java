@@ -69,6 +69,13 @@ public class UserController {
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
     }
 
+    // NOTE: This method was added in order to implement a simple rest client and circuit breaker.
+    // The schema used in the users retrieved from this endpoint is different from the one used in this API.
+    @GetMapping("/examples")
+    public ResponseEntity<?> getUserExamples() throws Throwable {
+        return new ResponseEntity<>(userService.getUserExamples(), HttpStatus.OK);
+    }
+
     // ---------------------------------- ACCOUNTS ----------------------------------
     @GetMapping("/{user_id}/accounts/{account_id}")
     @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")

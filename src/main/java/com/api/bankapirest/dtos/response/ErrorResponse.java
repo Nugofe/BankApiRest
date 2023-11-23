@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-//@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -37,7 +36,7 @@ public class ErrorResponse {
         timestamp = LocalDateTime.now();
     }
 
-    public ResponseEntity<ErrorResponse> generateResponseEntity() {
+    public ResponseEntity<Object> generateResponseEntity() {
         return new ResponseEntity<>(this, this.statusError);
     }
 }

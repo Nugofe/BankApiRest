@@ -10,6 +10,7 @@ import com.api.bankapirest.models.Role;
 import com.api.bankapirest.models.User;
 import com.api.bankapirest.repositories.IRoleRepository;
 import com.api.bankapirest.repositories.IUserRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,6 +19,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +97,13 @@ public class UserServiceImpl implements IUserService {
         userRepository.deleteById(id);
     }
 
+    @CircuitBreaker(name = "UserExamples")
+    public Object[] getUserExamples() {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject("https://jsonplaceholder.typicode.com/users", Object[].class);
+    }
+
+
     public List<Role> buildRoles(List<ERole> rolesTypes) {
         List<Role> roles = new ArrayList<>();
         for (ERole r : rolesTypes) {
@@ -112,7 +121,6 @@ public class UserServiceImpl implements IUserService {
         return User.builder()
                 .nif(userDTO.getNif())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
-                //.password(userDTO.getPassword())
                 .firstname(userDTO.getFirstname())
                 .surname(userDTO.getSurname())
                 .roles(roles)
