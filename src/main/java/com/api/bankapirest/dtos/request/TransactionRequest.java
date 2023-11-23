@@ -15,9 +15,11 @@ public class TransactionRequest {
     private Long emitterAccountId;
 
     @NotNull
+    @NotNull(message = "{valid.transaction.receiverAccountId.NotNull}")
     private Long receiverAccountId;
 
-    @DecimalMin("0.1")
+    @NotNull(message = "{valid.transaction.money.NotNull}")
+    @DecimalMin(value = "0.1", message = "{valid.transaction.money.DecimalMin}")
     private Double money;
 
 }

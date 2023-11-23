@@ -37,8 +37,8 @@ public class Transaction implements Serializable {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Account receiverAccount;
 
-    @NotNull
-    @DecimalMin("0.1")
+    @NotNull(message = "{valid.transaction.money.NotNull}")
+    @DecimalMin(value = "0.1", message = "{valid.transaction.money.DecimalMin}")
     private Double money;
 
     @NotNull

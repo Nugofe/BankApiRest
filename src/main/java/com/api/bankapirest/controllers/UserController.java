@@ -3,6 +3,7 @@ package com.api.bankapirest.controllers;
 import com.api.bankapirest.dtos.request.AccountRequest;
 import com.api.bankapirest.dtos.request.RegisterRequest;
 import com.api.bankapirest.dtos.request.TransactionRequest;
+import com.api.bankapirest.exceptions.ApiException;
 import com.api.bankapirest.utils.Utils;
 import com.api.bankapirest.models.Account;
 import com.api.bankapirest.models.Transaction;
@@ -10,18 +11,20 @@ import com.api.bankapirest.models.User;
 import com.api.bankapirest.services.account.IAccountService;
 import com.api.bankapirest.services.transaction.ITransactionService;
 import com.api.bankapirest.services.user.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final IUserService userService;
@@ -31,69 +34,37 @@ public class UserController {
     // ---------------------------------- USERS ----------------------------------
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #id == authentication.principal.id)")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getUser(@PathVariable Long id) throws ApiException {
         User user = userService.findById(id);
-
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(Utils.buildUserDTO(user), HttpStatus.OK);
     }
 
     @GetMapping()
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> getUsers() {
+    public ResponseEntity<?> getUsers() throws ApiException {
         List<User> users = userService.findAll();
-
-        if(users == null || users.size() <= 0) {
-            return new ResponseEntity<>("Users not found", HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(Utils.buildUsersDTOs(users), HttpStatus.OK);
     }
 
     @PostMapping()
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> createUser(@RequestBody RegisterRequest userRequest) {
-        User userDB = userService.findByNif(userRequest.getNif());
-
-        if(userDB != null) {
-            return new ResponseEntity<>("User already created", HttpStatus.CONFLICT);
-        }
-
-        User user = userService.buildUser(userRequest);
-        userService.save(user);
-
+    public ResponseEntity<?> createUser(@Valid @RequestBody RegisterRequest userRequest) throws ApiException {
+        User user = userService.create(userRequest);
         return new ResponseEntity<>(Utils.buildUserDTO(user), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #id == authentication.principal.id)")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody RegisterRequest userRequest) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody RegisterRequest userRequest) throws ApiException {
         User userDB = userService.findById(id);
-
-        if(userDB == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
-        User user = userService.buildUser(userRequest);
-        user.setId(userDB.getId());
-        user.setCreatedAt(userDB.getCreatedAt());
-        userService.save(user);
-
+        User user = userService.update(userDB, userRequest);
         return new ResponseEntity<>(Utils.buildUserDTO(user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #id == authentication.principal.id)")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        User user = userService.findById(id);
-
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) throws ApiException {
+        userService.findById(id);
         userService.delete(id);
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
     }
@@ -104,30 +75,17 @@ public class UserController {
     public ResponseEntity<?> getUserAccount(
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "account_id") Long accountId
-    ) {
-        User user = userService.findById(userId);
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
+    ) throws ApiException {
+        //userService.findById(userId);
         Account account = accountService.findByUser(userId, accountId);
-        if(account == null) {
-            return new ResponseEntity<>("Account not found for this user", HttpStatus.NOT_FOUND);
-        }
-
-        //account.setUser(null);
         return new ResponseEntity<>(Utils.buildAccountDTO(account), HttpStatus.OK);
     }
 
     @GetMapping("/{user_id}/accounts")
     @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")
-    public ResponseEntity<?> getUserAccounts(@PathVariable(value = "user_id") Long userId) {
+    public ResponseEntity<?> getUserAccounts(@PathVariable(value = "user_id") Long userId) throws ApiException {
+        //userService.findById(userId);
         List<Account> accounts = accountService.findAllByUser(userId);
-
-        if(accounts == null || accounts.size() <= 0) {
-            return new ResponseEntity<>("Accounts not found for this user", HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(Utils.buildAccountsDTOs(accounts), HttpStatus.OK);
     }
 
@@ -135,18 +93,10 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")
     public ResponseEntity<?> createUserAccount(
             @PathVariable(value = "user_id") Long userId,
-            @RequestBody AccountRequest accountRequest
-    ) {
-        User userDB = userService.findById(userId);
-
-        if(userDB == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
-        Account account = Utils.buildAccount(accountRequest);
-        account.setUser(userDB);
-
-        accountService.save(account);
+            @Valid @RequestBody AccountRequest accountRequest
+    ) throws ApiException {
+        User user = userService.findById(userId);
+        Account account = accountService.create(accountRequest, user);
         return new ResponseEntity<>(Utils.buildAccountDTO(account), HttpStatus.OK);
     }
 
@@ -155,24 +105,11 @@ public class UserController {
     public ResponseEntity<?> updateUserAccount(
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "account_id") Long accountId,
-            @RequestBody AccountRequest accountRequest
-    ) {
+            @Valid @RequestBody AccountRequest accountRequest
+    ) throws ApiException {
         User userDB = userService.findById(userId);
-        if(userDB == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
         Account accountDB = accountService.findByUser(userId, accountId);
-        if(accountDB == null) {
-            return new ResponseEntity<>("Account not found for this user", HttpStatus.NOT_FOUND);
-        }
-
-        Account account = Utils.buildAccount(accountRequest);
-        account.setId(accountDB.getId());
-        account.setCreatedAt(accountDB.getCreatedAt());
-        account.setUser(userDB);
-
-        accountService.save(account);
+        Account account = accountService.update(accountDB, userDB, accountRequest);
         return new ResponseEntity<>(Utils.buildAccountDTO(account), HttpStatus.OK);
     }
 
@@ -181,19 +118,11 @@ public class UserController {
     public ResponseEntity<?> deleteUserAccount(
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "account_id") Long accountId
-    ) {
-        User user = userService.findById(userId);
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
-        Account account = accountService.findByUser(userId, accountId);
-        if(account == null) {
-            return new ResponseEntity<>("Account not found for this user", HttpStatus.NOT_FOUND);
-        }
-
+    ) throws ApiException {
+        userService.findById(userId);
+        accountService.findByUser(userId, accountId);
         accountService.delete(accountId);
-        return new ResponseEntity<>("User account successfully deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Account deleted successfully", HttpStatus.OK);
     }
 
     // ---------------------------------- TRANSACTIONS ----------------------------------
@@ -202,29 +131,17 @@ public class UserController {
     public ResponseEntity<?> getUserTransaction(
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "transaction_id") Long transactionId
-    ) {
-        User user = userService.findById(userId);
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
+    )  throws ApiException {
+        userService.findById(userId);
         Transaction transaction = transactionService.findByUser(userId, transactionId);
-        if(transaction == null) {
-            return new ResponseEntity<>("Transaction not found for this user", HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(Utils.buildTransactionDTO(transaction), HttpStatus.OK);
     }
 
     @GetMapping("/{user_id}/transactions")
     @PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")
-    public ResponseEntity<?> getUserTransactions(@PathVariable(value = "user_id") Long userId) {
+    public ResponseEntity<?> getUserTransactions(@PathVariable(value = "user_id") Long userId) throws ApiException {
+        userService.findById(userId);
         List<Transaction> transactions = transactionService.findAllByUser(userId);
-
-        if(transactions == null || transactions.size() <= 0) {
-            return new ResponseEntity<>("Transactions not found for this user", HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(Utils.buildTransactionsDTOs(transactions), HttpStatus.OK);
     }
 
@@ -234,22 +151,10 @@ public class UserController {
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "account_id") Long accountId,
             @PathVariable(value = "transaction_id") Long transactionId
-    ) {
-        User user = userService.findById(userId);
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
-        Account account = accountService.findByUser(userId, accountId);
-        if(account == null) {
-            return new ResponseEntity<>("Account not found for this user", HttpStatus.NOT_FOUND);
-        }
-
+    ) throws ApiException {
+        userService.findById(userId);
+        accountService.findByUser(userId, accountId);
         Transaction transaction = transactionService.findByAccount(accountId, transactionId);
-        if(transaction == null) {
-            return new ResponseEntity<>("Transaction not found for this user account", HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(Utils.buildTransactionDTO(transaction), HttpStatus.OK);
     }
 
@@ -258,22 +163,10 @@ public class UserController {
     public ResponseEntity<?> getAccountTransactions(
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "account_id") Long accountId
-    ) {
-        User user = userService.findById(userId);
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
-        Account account = accountService.findById(accountId);
-        if(account == null) {
-            return new ResponseEntity<>("Account not found for this user", HttpStatus.NOT_FOUND);
-        }
-
+    ) throws ApiException {
+        userService.findById(userId);
+        accountService.findByUser(userId, accountId);
         List<Transaction> transactions = transactionService.findAllByAccount(accountId);
-        if(transactions == null || transactions.size() <= 0) {
-            return new ResponseEntity<>("Transactions not found for this user account", HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(Utils.buildTransactionsDTOs(transactions), HttpStatus.OK);
     }
 
@@ -282,30 +175,12 @@ public class UserController {
     public ResponseEntity<?> createTransaction(
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "account_id") Long accountId,
-            @RequestBody TransactionRequest transactionRequest
-    ) {
-        User user = userService.findById(userId);
-        if(user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-        }
-
-        Account account = accountService.findByUser(userId, accountId);
-        if(account == null) {
-            return new ResponseEntity<>("Account not found for this user", HttpStatus.NOT_FOUND);
-        }
-
+            @Valid @RequestBody TransactionRequest transactionRequest
+    ) throws ApiException {
+        userService.findById(userId);
+        Account emitterAccount = accountService.findByUser(userId, accountId);
         Account receiverAccount = accountService.findById(transactionRequest.getReceiverAccountId());
-        if(receiverAccount == null) {
-            return new ResponseEntity<>("Receiver account not found", HttpStatus.NOT_FOUND);
-        }
-
-        if(Objects.equals(account.getId(), receiverAccount.getId())) {
-            return new ResponseEntity<>("The emitter and the receiver account cannot be the same", HttpStatus.BAD_REQUEST);
-        }
-
-        Transaction transaction = Utils.buildTransaction(transactionRequest);
-        transaction.setEmitterAccount(account);
-        transaction.setReceiverAccount(receiverAccount);
-        return transactionService.save(transaction);
+        Transaction transaction = transactionService.create(transactionRequest, emitterAccount, receiverAccount);
+        return new ResponseEntity<>(Utils.buildTransactionDTO(transaction), HttpStatus.OK);
     }
 }

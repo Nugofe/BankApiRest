@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountRequest {
-    @NotBlank
-    @Size(min = 2, max = 50)
+
+    @NotBlank(message = "{valid.account.accountName.NotBlank}")
+    @Size(min = 2, max = 50, message = "{valid.account.accountName.Size}")
     //@JsonProperty("account_name")
     private String accountName;
 

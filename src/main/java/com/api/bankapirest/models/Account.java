@@ -28,8 +28,8 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 2, max = 50)
+    @NotBlank(message = "{valid.account.accountName.NotBlank}")
+    @Size(min = 2, max = 50, message = "{valid.account.accountName.Size}")
     @Column(name = "account_name")
     private String accountName;
 

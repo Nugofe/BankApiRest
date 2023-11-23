@@ -27,21 +27,20 @@ public class User implements UserDetails { // UserDetails already implements Ser
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Pattern(regexp = "[0-9]{8}[A-Z]")
+    @NotBlank(message = "{valid.user.nif.NotBlank}")
+    @Pattern(regexp = "[0-9]{8}[A-Z]", message = "{valid.user.nif.Pattern}")
     private String nif;
 
-    @NotBlank
+    @NotBlank(message = "{valid.user.password.NotBlank}")
     //@Size(min = 4, max = 20)
-    //@Pattern(regexp = "[0-9]{8}[A-Z]")
     private String password;
 
-    @NotBlank
-    @Size(min = 2, max = 30)
+    @NotBlank(message = "{valid.user.firstname.NotBlank}")
+    @Size(min = 2, max = 30, message = "{valid.user.firstname.Size}")
     private String firstname;
 
-    @NotBlank
-    @Size(min = 2, max = 60)
+    @NotBlank(message = "{valid.user.surname.NotBlank}")
+    @Size(min = 2, max = 60, message = "{valid.user.surname.Size}")
     private String surname;
 
     @NotNull
@@ -62,15 +61,16 @@ public class User implements UserDetails { // UserDetails already implements Ser
     @PrePersist
     public void prePersist() {
         createdAt = new Date();
-        //roles.add(0, ERole.USER); // user role must always be present
     }
 
-    private void setRoles(List<Role> roles) {
-        // nothing to do
-        /*this.roles = null;
-        roles.add(0, ERole.USER); // user role must always be present
-        addRoles(roles);*/
-    }
+    /*public void setRoles(List<Role> roles) {
+        Set<Role> rolesSet = new HashSet<>(roles);
+
+        this.roles = rolesSet.stream().toList();
+        Role userRole = new Role((long) ERole.USER.ordinal(), ERole.USER.name());
+        this.roles.remove(userRole);
+        this.roles.add(0, userRole);
+    }*/
 
     public void addRoles(List<Role> roles) {
         for(Role r : roles) {

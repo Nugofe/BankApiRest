@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ERole {
-    ADMIN("ADMIN"),
-    USER("USER");
 
+    USER("USER"),
+    ADMIN("ADMIN");
 
     @Getter
     private String name;

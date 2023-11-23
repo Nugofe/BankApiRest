@@ -13,11 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest {
-    @NotBlank
-    @Pattern(regexp = "[0-9]{8}[A-Z]")
+
+    @NotBlank(message = "{valid.user.nif.NotBlank}")
+    @Pattern(regexp = "[0-9]{8}[A-Z]", message = "{valid.user.nif.Pattern}")
     private String nif;
 
-    @NotBlank
+    @NotBlank(message = "{valid.user.password.NotBlank}")
     @Size(min = 4, max = 20)
     private String password;
 }

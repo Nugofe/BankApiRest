@@ -14,24 +14,17 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-//@Builder(builderMethodName = "RegisterRequestBuilder")
 public class RegisterRequest extends AuthenticationRequest {
-    /*@NotBlank
-    @Pattern(regexp = "[0-9]{8}[A-Z]")
-    private String nif;
 
-    @NotBlank
-    @Size(min = 4, max = 20)
-    private String password;*/
-
-    @NotBlank
-    @Size(min = 2, max = 30)
+    @NotBlank(message = "{valid.user.firstname.NotBlank}")
+    @Size(min = 2, max = 30, message = "{valid.user.firstname.Size}")
     private String firstname;
 
-    @NotBlank
-    @Size(min = 2, max = 60)
+    @NotBlank(message = "{valid.user.surname.NotBlank}")
+    @Size(min = 2, max = 60, message = "{valid.user.surname.Size}")
     private String surname;
 
+    //@Schema(allowableValues =  {"ROLE_USER, ROLE_ADMIN"})
     @Enumerated(EnumType.STRING)
     private List<ERole> roles;
 
