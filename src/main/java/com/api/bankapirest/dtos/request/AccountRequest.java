@@ -1,5 +1,6 @@
 package com.api.bankapirest.dtos.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,9 +16,10 @@ public class AccountRequest {
 
     @NotBlank(message = "{valid.account.accountName.NotBlank}")
     @Size(min = 2, max = 50, message = "{valid.account.accountName.Size}")
-    //@JsonProperty("account_name")
+    @Schema(example = "Santander")
     private String accountName;
 
+    @Schema(example = "2000.0")
     private Double money;
 
 }

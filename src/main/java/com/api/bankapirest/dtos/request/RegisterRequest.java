@@ -1,6 +1,7 @@
 package com.api.bankapirest.dtos.request;
 
 import com.api.bankapirest.models.ERole;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
@@ -18,13 +19,14 @@ public class RegisterRequest extends AuthenticationRequest {
 
     @NotBlank(message = "{valid.user.firstname.NotBlank}")
     @Size(min = 2, max = 30, message = "{valid.user.firstname.Size}")
+    @Schema(example = "Mario")
     private String firstname;
 
     @NotBlank(message = "{valid.user.surname.NotBlank}")
     @Size(min = 2, max = 60, message = "{valid.user.surname.Size}")
+    @Schema(example = "Fernandez Garcia")
     private String surname;
 
-    //@Schema(allowableValues =  {"ROLE_USER, ROLE_ADMIN"})
     @Enumerated(EnumType.STRING)
     private List<ERole> roles;
 

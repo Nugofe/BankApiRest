@@ -43,20 +43,24 @@ public class UserController {
 
     // ---------------------------------- USERS ----------------------------------
     @Operation(
+            operationId = "getOneUser",
             summary = "Get a user by id",
             description = "Retrieve a user given its id. The expected response is the user.",
             tags = { "users", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The requested user", content = {
                     @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -68,20 +72,24 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "getAllUsers",
             summary = "Get all users",
             description = "Get all the users stored the in database. The expected response is al list with all the users.",
             tags = { "users", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The list of users", content = {
                     @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -93,23 +101,34 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "createOneUser",
             summary = "Create a user",
             description = "Create a new user and store it in the database. The expected response is the new user.",
             tags = { "users", "POST" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The created user", content = {
                     @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "400", content = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "409", content = {
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Conflict", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -121,23 +140,34 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "updateOneUser",
             summary = "Update a user",
             description = "Update an existent user in the database. The expected response is the updated user.",
             tags = { "users", "PUT" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The updated user", content = {
                     @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "400", content = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -150,21 +180,30 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "deleteOneUser",
             summary = "Delete a user",
             description = "Delete an existent user from the database. " +
                     "The expected response is a message informing that the user was deleted successfully.",
             tags = { "users", "DELETE" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = String.class), mediaType = "application/json")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "A message informing the requested user was deleted successfully", content = {
+                    @Content(schema = @Schema(example = "User deleted successfully"), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -179,19 +218,31 @@ public class UserController {
     // NOTE: This method was added in order to implement a simple rest client and circuit breaker.
     // The schema used in the users retrieved from this endpoint is different from the one used in this API.
     @Operation(
+            operationId = "getExternalUserExamples",
             summary = "Get user examples from external API",
             description = "Get user examples from an external API. " +
                     "This method was added in order to implement a simple rest client and circuit breaker. " +
                     "The schema used in the users retrieved from this endpoint is different from the one used in this API.",
             tags = { "users", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The list of user examples", content = {
                     @Content(mediaType = "application/json")
             }),
-            /*@ApiResponse(responseCode = "403", content = {
+            /*@ApiResponse(
+            responseCode = "403",
+             description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),*/
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
+                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
+            }),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Service Unavailable", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -202,21 +253,25 @@ public class UserController {
 
     // ---------------------------------- ACCOUNTS ----------------------------------
     @Operation(
-            summary = "Get a user account",
+            operationId = "getOneUserAccount",
+            summary = "Get a user account by id",
             description = "Retrieve the account of a user given the account id and the user id. " +
                     "The expected response is the user account.",
             tags = { "accounts", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The requested user account", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -232,21 +287,25 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "getAllUserAccounts",
             summary = "Get all user accounts.",
             description = "Retrieve all the user accounts given the user id. " +
                     "The expected response is the list of accounts of the user.",
             tags = { "accounts", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The list of accounts that belong to the user", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -259,27 +318,35 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "createOneUserAccount",
             summary = "Create a user account.",
             description = "Create a new user account given the user id, and store it in the database. " +
                     "The expected response is the new user account.",
             tags = { "accounts", "POST" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The created account", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "400", content = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "409", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -295,24 +362,35 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "updateOneUserAccount",
             summary = "Update a user account.",
             description = "Update an existent user account given the account id and the user id. " +
                     "The expected response is the updated user account.",
             tags = { "accounts", "PUT" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The updated account", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "400", content = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -330,24 +408,35 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "deleteOneUserAccount",
             summary = "Delete a user account.",
             description = "Delete an existent user account given the account id and the user id. " +
                     "The expected response is a message informing the account was deleted successfully.",
             tags = { "accounts", "DELETE" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "A message informing the requested account was deleted successfully", content = {
+                    @Content(schema = @Schema(example = "Account deleted successfully"), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "400", content = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -365,21 +454,25 @@ public class UserController {
 
     // ---------------------------------- TRANSACTIONS ----------------------------------
     @Operation(
-            summary = "Get a user transaction.",
+            operationId = "getOneUserTransaction",
+            summary = "Get a user transaction by id.",
             description = "Retrieve a transaction given the transaction id and the user id of one of the users involved in the transaction. " +
                     "The expected response is the user transaction.",
             tags = { "transactions", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The requested transaction", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -395,21 +488,25 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "getAllUserTransactions",
             summary = "Get user transactions.",
             description = "Retrieve all the transaction of a user given the user id. " +
                     "The expected response is a list with the user transactions.",
             tags = { "transactions", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The list of user transactions", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -422,21 +519,25 @@ public class UserController {
     }
 
     @Operation(
-            summary = "Get an account transaction.",
+            operationId = "getOneAccountTransaction",
+            summary = "Get an account transaction by id.",
             description = "Retrieve a transaction given the transaction id and the account and user ids of one of the users involved in the transaction. " +
                     "The expected response is the account transaction.",
             tags = { "transactions", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The requested account transaction", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -454,21 +555,25 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "getAllAccountTransactions",
             summary = "Get an account transaction.",
             description = "Retrieve a transaction given the transaction id and the account and user ids of one of the users involved in the transaction. " +
                     "The expected response is the account transaction.",
             tags = { "transactions", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The list of account transactions", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -485,27 +590,40 @@ public class UserController {
     }
 
     @Operation(
+            operationId = "createOneTransaction",
             summary = "Create a transaction.",
             description = "Create a new transaction given the user id and the account id that will emit the transaction, and store it in the database. " +
                     "The expected response is the new transaction.",
             tags = { "transactions", "POST" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The created transaction", content = {
                     @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "400", content = {
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "422",
+                    description = "Unprocessable Entity", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "503", content = {
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })

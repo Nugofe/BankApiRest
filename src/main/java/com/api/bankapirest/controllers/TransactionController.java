@@ -1,7 +1,7 @@
 package com.api.bankapirest.controllers;
 
 import com.api.bankapirest.dtos.response.ErrorResponse;
-import com.api.bankapirest.dtos.response.UserDTO;
+import com.api.bankapirest.dtos.response.TransactionDTO;
 import com.api.bankapirest.exceptions.ApiException;
 import com.api.bankapirest.models.Transaction;
 import com.api.bankapirest.services.transaction.ITransactionService;
@@ -35,20 +35,24 @@ public class TransactionController {
     private final ITransactionService transactionsService;
 
     @Operation(
+            operationId = "getOneTransaction",
             summary = "Get an transaction by id",
             description = "Retrieve an transaction given its id. The expected response is the transaction.",
             tags = { "accounts", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The requested transaction", content = {
+                    @Content(schema = @Schema(implementation = TransactionDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -59,21 +63,25 @@ public class TransactionController {
     }
 
     @Operation(
+            operationId = "getAllTransactions",
             summary = "Get all transactions",
             description = "Get all the transactions stored the in database. " +
                     "The expected response is al list with all the transactions.",
             tags = { "transactions", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The list of transactions", content = {
+                    @Content(schema = @Schema(implementation = TransactionDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })

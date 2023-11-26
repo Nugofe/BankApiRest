@@ -1,7 +1,7 @@
 package com.api.bankapirest.controllers;
 
+import com.api.bankapirest.dtos.response.AccountDTO;
 import com.api.bankapirest.dtos.response.ErrorResponse;
-import com.api.bankapirest.dtos.response.UserDTO;
 import com.api.bankapirest.exceptions.ApiException;
 import com.api.bankapirest.models.Account;
 import com.api.bankapirest.services.account.IAccountService;
@@ -32,20 +32,24 @@ public class AccountController {
     private final IAccountService accountService;
 
     @Operation(
+            operationId = "getOneAccount",
             summary = "Get an account by id",
             description = "Retrieve an account given its id. The expected response is the account.",
             tags = { "accounts", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The requested account", content = {
+                    @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })
@@ -56,21 +60,25 @@ public class AccountController {
     }
 
     @Operation(
+            operationId = "getAllAccounts",
             summary = "Get all accounts",
             description = "Get all the accounts stored the in database. " +
                     "The expected response is al list with all the accounts.",
             tags = { "accounts", "GET" })
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = UserDTO.class), mediaType = "application/json")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "The list of accounts", content = {
+                    @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "403", content = {
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Unauthorized", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(responseCode = "500", content = {
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not Found", content = {
                     @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
             })
     })

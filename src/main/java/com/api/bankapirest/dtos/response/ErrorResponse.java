@@ -2,6 +2,7 @@ package com.api.bankapirest.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Schema(type = "string", pattern = "yyyy-MM-dd HH:mm:ss", example = "2023-11-24 08:37:13")
     private LocalDateTime timestamp;
+
+    @Schema(example = "BAD_REQUEST")
     private HttpStatus statusError;
+
+    @Schema(example = "NIF field incorrect pattern (example: 12345678A)")
     private List<String> errors;
 
     public ErrorResponse(String message, HttpStatus status) {
