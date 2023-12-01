@@ -1,7 +1,5 @@
 package com.bank.userservice.configuration;
 
-import com.bank.userservice.models.User;
-import com.bank.userservice.repositories.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -65,7 +63,7 @@ public class ApplicationConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    }*/
 
     // CACHE
     @Bean
@@ -90,7 +88,7 @@ public class ApplicationConfig {
     }
 
     // LOCALIZATION
-    @Bean
+    /*@Bean
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setDefaultLocale(Locale.US);

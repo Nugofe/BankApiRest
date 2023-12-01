@@ -1,5 +1,6 @@
 package com.bank.userservice.models;
 
+import com.bank.library.models.ERole;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;

@@ -1,4 +1,4 @@
-package com.bank.userservice.models;
+package com.bank.library.models;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

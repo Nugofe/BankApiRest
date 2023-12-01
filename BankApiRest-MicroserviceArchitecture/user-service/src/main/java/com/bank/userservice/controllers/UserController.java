@@ -1,7 +1,8 @@
 package com.bank.userservice.controllers;
 
+import com.bank.library.dtos.requests.UserRequest;
+import com.bank.library.exceptions.ApiException;
 import com.bank.userservice.clients.IAccountClient;
-import com.bank.userservice.dtos.request.UserRequestDTO;
 import com.bank.userservice.utils.Utils;
 import com.bank.userservice.models.User;
 import com.bank.userservice.services.user.IUserService;
@@ -25,8 +26,6 @@ public class UserController {
 
     private final IUserService userService;
     private final IAccountClient accountService;
-    //private final IAccountService accountService;
-    //private final ITransactionService transactionService;
 
     // ---------------------------------- USERS ----------------------------------
     /*@Operation(
@@ -53,9 +52,9 @@ public class UserController {
     })*/
     @GetMapping("/{id}")
     //@PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #id == authentication.principal.id)")
-    public ResponseEntity<?> getUser(@PathVariable Long id) /*throws ApiException*/ {
+    public ResponseEntity<?> getUser(@PathVariable Long id) throws ApiException {
         User user = userService.findById(id);
-        return new ResponseEntity<>(Utils.buildUserDTO(user), HttpStatus.OK);
+        return new ResponseEntity<>(Utils.mapUserToResponse(user), HttpStatus.OK);
     }
 
     /*@Operation(
@@ -82,9 +81,9 @@ public class UserController {
     })*/
     @GetMapping()
     //@PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> getUsers() /*throws ApiException*/ {
+    public ResponseEntity<?> getUsers() throws ApiException {
         List<User> users = userService.findAll();
-        return new ResponseEntity<>(Utils.buildUsersDTOs(users), HttpStatus.OK);
+        return new ResponseEntity<>(Utils.mapUserListToResponse(users), HttpStatus.OK);
     }
 
     /*@Operation(
@@ -121,9 +120,9 @@ public class UserController {
     })*/
     @PostMapping()
     //@PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDTO userRequest) /*throws ApiException*/ {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest userRequest) throws ApiException {
         User user = userService.create(userRequest);
-        return new ResponseEntity<>(Utils.buildUserDTO(user), HttpStatus.OK);
+        return new ResponseEntity<>(Utils.mapUserToResponse(user), HttpStatus.CREATED);
     }
 
     /*@Operation(
@@ -160,10 +159,13 @@ public class UserController {
     })*/
     @PutMapping("/{id}")
     //@PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #id == authentication.principal.id)")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO userRequest) /*throws ApiException*/ {
+    public ResponseEntity<?> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserRequest userRequest
+    ) throws ApiException {
         User userDB = userService.findById(id);
         User user = userService.update(userDB, userRequest);
-        return new ResponseEntity<>(Utils.buildUserDTO(user), HttpStatus.OK);
+        return new ResponseEntity<>(Utils.mapUserToResponse(user), HttpStatus.OK);
     }
 
     /*@Operation(
@@ -196,7 +198,7 @@ public class UserController {
     })*/
     @DeleteMapping("/{id}")
     //@PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #id == authentication.principal.id)")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) /*throws ApiException*/ {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) throws ApiException {
         userService.findById(id);
         userService.delete(id);
         return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
@@ -262,11 +264,9 @@ public class UserController {
     public ResponseEntity<?> getUserAccount(
             @PathVariable(value = "user_id") Long userId,
             @PathVariable(value = "account_id") Long accountId
-    ) /*throws ApiException*/ {
+    ) throws ApiException {
         userService.findById(userId);
         return accountService.getAccount(userId, accountId);
-        //Account account = accountService.getAccount(userId, accountId);
-        //return new ResponseEntity<>(Utils.buildAccountDTO(account), HttpStatus.OK);
     }
 
     /*@Operation(
@@ -294,147 +294,9 @@ public class UserController {
     })*/
     @GetMapping("/{user_id}/accounts")
     //@PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")
-    public ResponseEntity<?> getUserAccounts(@PathVariable(value = "user_id") Long userId) /*throws ApiException*/ {
+    public ResponseEntity<?> getUserAccounts(@PathVariable(value = "user_id") Long userId) throws ApiException {
         userService.findById(userId);
         return accountService.getAccounts(userId);
-        //List<Account> accounts = accountService.getAccounts(userId);
-        //return new ResponseEntity<>(Utils.buildAccountsDTOs(accounts), HttpStatus.OK);
     }
-
-/*
-    *//*@Operation(
-            operationId = "createOneUserAccount",
-            summary = "Create a user account.",
-            description = "Create a new user account given the user id, and store it in the database. " +
-                    "The expected response is the new user account.",
-            tags = { "accounts", "POST" })
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "The created account", content = {
-                    @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Unauthorized", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal Server Error", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            })
-    })*//*
-    @PostMapping("/{user_id}/accounts")
-    //@PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")
-    public ResponseEntity<?> createUserAccount(
-            @PathVariable(value = "user_id") Long userId,
-            @Valid @RequestBody AccountRequest accountRequest
-    ) throws ApiException {
-        User user = userService.findById(userId);
-        Account account = accountService.create(accountRequest, user);
-        return new ResponseEntity<>(Utils.buildAccountDTO(account), HttpStatus.OK);
-    }
-
-    *//*@Operation(
-            operationId = "updateOneUserAccount",
-            summary = "Update a user account.",
-            description = "Update an existent user account given the account id and the user id. " +
-                    "The expected response is the updated user account.",
-            tags = { "accounts", "PUT" })
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "The updated account", content = {
-                    @Content(schema = @Schema(implementation = AccountDTO.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Unauthorized", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal Server Error", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            })
-    })*//*
-    @PutMapping("/{user_id}/accounts/{account_id}")
-    //@PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")
-    public ResponseEntity<?> updateUserAccount(
-            @PathVariable(value = "user_id") Long userId,
-            @PathVariable(value = "account_id") Long accountId,
-            @Valid @RequestBody AccountRequest accountRequest
-    ) *//*throws ApiException*//* {
-        User userDB = userService.findById(userId);
-        Account accountDB = accountService.findByUser(userId, accountId);
-        Account account = accountService.update(accountDB, userDB, accountRequest);
-        return new ResponseEntity<>(Utils.buildAccountDTO(account), HttpStatus.OK);
-    }
-
-    *//*@Operation(
-            operationId = "deleteOneUserAccount",
-            summary = "Delete a user account.",
-            description = "Delete an existent user account given the account id and the user id. " +
-                    "The expected response is a message informing the account was deleted successfully.",
-            tags = { "accounts", "DELETE" })
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "A message informing the requested account was deleted successfully", content = {
-                    @Content(schema = @Schema(example = "Account deleted successfully"), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Unauthorized", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            }),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal Server Error", content = {
-                    @Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = "application/json")
-            })
-    })*//*
-    @DeleteMapping("/{user_id}/accounts/{account_id}")
-    //@PreAuthorize("hasAuthority('ADMIN') or (hasAuthority('USER') and #userId == authentication.principal.id)")
-    public ResponseEntity<?> deleteUserAccount(
-            @PathVariable(value = "user_id") Long userId,
-            @PathVariable(value = "account_id") Long accountId
-    ) *//*throws ApiException*//* {
-        userService.findById(userId);
-        accountService.findByUser(userId, accountId);
-        accountService.delete(accountId);
-        return new ResponseEntity<>("Account deleted successfully", HttpStatus.OK);
-    }*/
 
 }

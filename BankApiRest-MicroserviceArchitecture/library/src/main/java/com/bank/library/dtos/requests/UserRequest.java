@@ -1,22 +1,21 @@
-package com.bank.userservice.dtos.request;
+package com.bank.library.dtos.requests;
 
-import com.bank.userservice.models.ERole;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.bank.library.models.ERole;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserRequestDTO /*extends AuthenticationRequest*/ {
+public class UserRequest {
 
     @NotBlank(message = "{valid.user.nif.NotBlank}")
     @Pattern(regexp = "[0-9]{8}[A-Z]", message = "{valid.user.nif.Pattern}")
@@ -41,15 +40,14 @@ public class UserRequestDTO /*extends AuthenticationRequest*/ {
     @Enumerated(EnumType.STRING)
     private List<ERole> roles;
 
-    public UserRequestDTO() {
+    public UserRequest() {
         super();
 
         roles = new ArrayList<>();
         roles.add(0, ERole.USER);
     }
 
-    public UserRequestDTO(String nif, String password, String firstname, String surname) {
-        //super(nif, password);
+    public UserRequest(String nif, String password, String firstname, String surname) {
         this.nif = nif;
         this.password = password;
         this.firstname = firstname;
@@ -59,8 +57,7 @@ public class UserRequestDTO /*extends AuthenticationRequest*/ {
         roles.add(0, ERole.USER);
     }
 
-    public UserRequestDTO(String nif, String password, String firstname, String surname, List<ERole> roles) {
-        //super(nif, password);
+    public UserRequest(String nif, String password, String firstname, String surname, List<ERole> roles) {
         this.nif = nif;
         this.password = password;
         this.firstname = firstname;

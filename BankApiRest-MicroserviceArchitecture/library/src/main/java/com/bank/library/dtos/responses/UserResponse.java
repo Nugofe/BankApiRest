@@ -1,9 +1,13 @@
-package com.bank.userservice.dtos.response;
+package com.bank.library.dtos.responses;
 
-import com.bank.userservice.models.Role;
+import com.bank.library.models.ERole;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponseDTO {
+@Component
+public class UserResponse {
 
     @Schema(example = "1")
     private Long id;
@@ -30,6 +35,7 @@ public class UserResponseDTO {
     @Schema(type = "string", pattern = "yyyy-MM-dd", example = "2017-08-01")
     private Date createdAt;
 
-    private List<Role> roles;
+    @Schema(allowableValues = {"USER, ADMIN"}, example = "USER")
+    private List<ERole> roles;
 
 }
