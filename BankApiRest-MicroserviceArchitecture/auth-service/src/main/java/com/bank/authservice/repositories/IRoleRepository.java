@@ -1,6 +1,6 @@
-package com.bank.userservice.repositories;
+package com.bank.authservice.repositories;
 
-import com.bank.userservice.models.Role;
+import com.bank.authservice.models.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableFeignClients
-//@ComponentScan(basePackages = {"com.bank.userservice.clients","com.bank.userservice.controllers"})
 public class UserServiceApplication {
 
 	public static void main(String[] args) {

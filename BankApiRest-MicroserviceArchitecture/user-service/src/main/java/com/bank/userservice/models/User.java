@@ -32,9 +32,9 @@ public class User /*implements UserDetails*/ { // UserDetails already implements
     @Pattern(regexp = "[0-9]{8}[A-Z]", message = "{valid.user.nif.Pattern}")
     private String nif;
 
-    @NotBlank(message = "{valid.user.password.NotBlank}")
+    //@NotBlank(message = "{valid.user.password.NotBlank}")
     //@Size(min = 4, max = 20)
-    private String password;
+    //private String password;
 
     @NotBlank(message = "{valid.user.firstname.NotBlank}")
     @Size(min = 2, max = 30, message = "{valid.user.firstname.Size}")
@@ -51,13 +51,13 @@ public class User /*implements UserDetails*/ { // UserDetails already implements
     @Valid
     private Date createdAt;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    /*@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
                 joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
                 uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})}
     )
-    private List<Role> roles;
+    private List<Role> roles;*/
 
     @PrePersist
     public void prePersist() {
@@ -73,7 +73,7 @@ public class User /*implements UserDetails*/ { // UserDetails already implements
         this.roles.add(0, userRole);
     }*/
 
-    public void addRoles(List<Role> roles) {
+    /*public void addRoles(List<Role> roles) {
         for(Role r : roles) {
             addRole(r);
         }
@@ -100,7 +100,7 @@ public class User /*implements UserDetails*/ { // UserDetails already implements
                 break;
             }
         }
-    }
+    }*/
 
     /*@Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

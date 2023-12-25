@@ -1,6 +1,5 @@
 package com.bank.userservice.services.user;
 
-//import com.bank.userservice.exceptions.ApiException;
 import com.bank.library.dtos.requests.UserRequest;
 import com.bank.library.exceptions.ApiException;
 import com.bank.userservice.models.User;
@@ -22,7 +21,7 @@ public interface IUserService {
 
     Object getUserExamples() throws Throwable;
 
-    User buildUser(UserRequest userDTO);
+    //User buildUser(UserRequest userDTO);
 
     // account client
     /*public ResponseEntity<AccountDTO> getUserAccount(Long userId, Long accountId);

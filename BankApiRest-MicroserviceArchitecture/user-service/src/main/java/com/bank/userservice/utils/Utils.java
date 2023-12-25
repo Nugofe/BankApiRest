@@ -1,8 +1,8 @@
 package com.bank.userservice.utils;
 
+import com.bank.library.dtos.requests.UserRequest;
 import com.bank.library.dtos.responses.UserResponse;
 import com.bank.library.models.ERole;
-import com.bank.userservice.models.Role;
 import com.bank.userservice.models.User;
 import lombok.RequiredArgsConstructor;
 
@@ -12,30 +12,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Utils {
 
-    public static List<ERole> getERoles(List<String> stringRoles) {
-        List<ERole> eRoles = new ArrayList<>();
-
-        for (String s : stringRoles) {
-            for (ERole e : ERole.values()) {
-                if(s.equals(e.name())) {
-                    eRoles.add(e);
-                }
-            }
-        }
-
-        return eRoles;
-    }
-
     public static UserResponse mapUserToResponse(User user) {
-        List<String> stringRoles = user.getRoles().stream().map(Role::getRolename).toList();
-
         return UserResponse.builder()
                 .id(user.getId())
                 .nif(user.getNif())
                 .firstname(user.getFirstname())
                 .surname(user.getSurname())
                 .createdAt(user.getCreatedAt())
-                .roles(Utils.getERoles(stringRoles))
                 .build();
     }
 
@@ -45,6 +28,14 @@ public class Utils {
             dtos.add(Utils.mapUserToResponse(elem));
         }
         return dtos;
+    }
+
+    public static User mapRequestToUser(UserRequest user) {
+        return User.builder()
+                .nif(user.getNif())
+                .firstname(user.getFirstname())
+                .surname(user.getSurname())
+                .build();
     }
 
 }

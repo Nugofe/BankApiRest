@@ -4,13 +4,11 @@ import com.bank.library.exceptions.ApiException;
 import com.bank.library.exceptions.BadRequestException;
 import com.bank.library.exceptions.ConflictException;
 import com.bank.library.exceptions.NotFoundException;
-import com.bank.library.models.ERole;
 import com.bank.library.dtos.requests.UserRequest;
 import com.bank.userservice.clients.IAccountClient;
-import com.bank.userservice.models.Role;
 import com.bank.userservice.models.User;
-import com.bank.userservice.repositories.IRoleRepository;
 import com.bank.userservice.repositories.IUserRepository;
+import com.bank.userservice.utils.Utils;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
@@ -30,9 +28,7 @@ import java.util.Objects;
 @CacheConfig(cacheNames={"users"})
 public class UserServiceImpl implements IUserService {
 
-    //private final PasswordEncoder passwordEncoder;
     private final IUserRepository userRepository;
-    private final IRoleRepository roleRepository;
 
     private final IAccountClient accountClient;
 
@@ -73,7 +69,7 @@ public class UserServiceImpl implements IUserService {
         if(userDB != null) {
             throw new ConflictException("User already created");
         }
-        return userRepository.save(buildUser(userRequest));
+        return userRepository.save(Utils.mapRequestToUser(userRequest));
     }
 
     @Transactional
@@ -83,7 +79,7 @@ public class UserServiceImpl implements IUserService {
             throw new BadRequestException("Field NIF is not modifiable");
         }
 
-        User user = buildUser(userRequest);
+        User user = Utils.mapRequestToUser(userRequest);
         user.setId(userDB.getId());
         user.setCreatedAt(userDB.getCreatedAt());
 
@@ -103,31 +99,6 @@ public class UserServiceImpl implements IUserService {
     public Object[] getUserExamples() {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject("https://jsonplaceholder.typicode.com/users", Object[].class);
-    }
-
-
-    public List<Role> getRoles(List<ERole> rolesTypes) {
-        List<Role> roles = new ArrayList<>();
-        for (ERole r : rolesTypes) {
-            // get the role and if found, add it to the list
-            roleRepository.findByRolename(r.getName()).ifPresent(roles::add);
-        }
-        return roles;
-    }
-
-    public User buildUser(UserRequest userDTO) {
-        // get the roles according to role types requested
-        List<Role> roles = getRoles(userDTO.getRoles());
-
-        // build the user
-        return User.builder()
-                .nif(userDTO.getNif())
-                //.password(passwordEncoder.encode(userDTO.getPassword()))
-                .password(userDTO.getPassword())
-                .firstname(userDTO.getFirstname())
-                .surname(userDTO.getSurname())
-                .roles(roles)
-                .build();
     }
 
     /*@Override
