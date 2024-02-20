@@ -22,7 +22,7 @@ public class SecurityConfig {
     private static final String API_URL_PATTERN = "/api";
 
     // beans configured in ApplicationConfig.java
-    private final AuthenticationProvider authenticatorProvider;
+    private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
@@ -33,15 +33,15 @@ public class SecurityConfig {
                     // login and register without security
                     req.requestMatchers(API_URL_PATTERN + "/v1/auth/**").permitAll()
                     // external rest client and circuit breaker without security, just to test easily
-                    .requestMatchers("/swagger-ui/**").permitAll()
+                    /*.requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers("/v3/api-docs/**").permitAll()
-                    .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers(API_URL_PATTERN + "/v1/users/examples").permitAll()
+                    .requestMatchers("/actuator/**").permitAll()*/
+                    //.requestMatchers(API_URL_PATTERN + "/v1/users/examples").permitAll()
                     // rest of the api with security
-                    .anyRequest().authenticated();
+                    .anyRequest().permitAll();
                 })
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticatorProvider)
+                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

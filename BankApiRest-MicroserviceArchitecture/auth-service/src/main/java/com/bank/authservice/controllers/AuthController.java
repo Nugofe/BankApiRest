@@ -1,28 +1,25 @@
  package com.bank.authservice.controllers;
 
 import com.bank.authservice.services.auth.AuthService;
-import com.bank.library.dtos.requests.AuthenticationRequest;
+import com.bank.library.dtos.requests.LoginRequest;
 import com.bank.library.dtos.requests.RegisterRequest;
+import com.bank.library.dtos.requests.ValidationRequest;
+import com.bank.library.dtos.responses.ValidationResponse;
 import com.bank.library.exceptions.ApiException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Authentication", description = "Authentication Endpoints. Accessible without authorization.")
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@Validated
+@Validated// extract the jwt token and the username in the token
 public class AuthController {
 
     private final AuthService authService;
@@ -55,8 +52,8 @@ public class AuthController {
             })
     })*/
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody AuthenticationRequest request) throws ApiException, UsernameNotFoundException {
-        return new ResponseEntity<>(authService.authenticate(request), HttpStatus.OK);
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) throws ApiException, UsernameNotFoundException {
+        return new ResponseEntity<>(authService.login(request), HttpStatus.OK);
     }
 
     /*@Operation(
@@ -87,7 +84,7 @@ public class AuthController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<Boolean> validateRequest(ServerHttpRequest request) {
-        return new ResponseEntity<>(authService.validateRequest(request), HttpStatus.OK);
+    public ValidationResponse validate(@Valid @RequestBody ValidationRequest request) {
+        return authService.validate(request.getAccessToken());
     }
 }

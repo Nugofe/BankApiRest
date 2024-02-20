@@ -16,7 +16,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RegisterRequest extends AuthenticationRequest {
+public class RegisterRequest extends LoginRequest {
 
     @NotBlank(message = "{valid.user.firstname.NotBlank}")
     @Size(min = 2, max = 30, message = "{valid.user.firstname.Size}")

@@ -43,21 +43,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String jwt = authHeader.substring(7);
         String username = jwtAuthService.extractUsername(jwt);
 
-        // if the user is not already authenticated
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // if teh token is valid and the user is not already authenticated, then allow to interact with the app
+        if(username != null && jwtAuthService.isTokenValid(jwt, username) &&
+                SecurityContextHolder.getContext().getAuthentication() == null
+        ) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // if the token is valid, then allow to interact with the app
-            // (create an authToken with the UserDetails and request information and add it to the security context)
-            if(jwtAuthService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+            // create an authToken with the UserDetails, and request information and add it to the security context
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities()
+            );
+            authToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
         filterChain.doFilter(request, response);
     }

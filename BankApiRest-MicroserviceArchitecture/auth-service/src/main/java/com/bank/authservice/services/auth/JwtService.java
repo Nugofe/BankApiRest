@@ -17,18 +17,18 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${application.config.secretKey}")
+    @Value("${app.config.secretKey}")
     private String SECRET_KEY;
 
-    @Value("${application.config.jwtExpiration}")
+    @Value("${app.config.jwtExpiration}")
     private long jwtExpiration;
 
-    @Value("${application.config.refreshExpiration}")
+    @Value("${app.config.refreshExpiration}")
     private long refreshExpiration;
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, String username) {
+        String name = extractUsername(token);
+        return name.equals(username) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token) {
@@ -46,7 +46,11 @@ public class JwtService {
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+        if(claims != null) {
+            return claimsResolver.apply(claims);
+        } else {
+            return null;
+        }
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -69,15 +73,19 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                // signature of the JWT token, used to verify the token has not been manipulated
-                //.setSigningKey(getSignInKey())
-                .verifyWith(getSignInKey())
-                .build()
-                //.parseClaimsJws(token)
-                .parseSignedClaims(token)
-                //.getBody();
-                .getPayload();
+        try{
+            return Jwts.parser()
+                    // signature of the JWT token, used to verify the token has not been manipulated
+                    //.setSigningKey(getSignInKey())
+                    .verifyWith(getSignInKey())
+                    .build()
+                    //.parseClaimsJws(token)
+                    .parseSignedClaims(token)
+                    //.getBody();
+                    .getPayload();
+        } catch (Exception exception){
+            return null;
+        }
     }
 
     private SecretKey getSignInKey() {

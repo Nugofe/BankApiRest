@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "account-service", url = "${application.config.accounts-url}")
+@FeignClient(name = "account-service", url = "${app.config.accounts-url}")
 public interface IAccountClient {
 
     @GetMapping("/{id}")

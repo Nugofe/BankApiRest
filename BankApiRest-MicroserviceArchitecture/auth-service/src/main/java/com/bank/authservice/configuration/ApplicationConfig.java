@@ -16,16 +16,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
@@ -36,10 +32,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private static final String API_URL_PATTERN = "/api";
     private final IUserCredentialsRepository credentialsRepository;
 
-    // SECURITY
+    // ------------- SECURITY -------------
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -75,35 +70,13 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /*@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((req) -> {
-                    // login and register without security
-                    req.requestMatchers(API_URL_PATTERN + "/v1/auth/**").permitAll()
-                            // external rest client and circuit breaker without security, just to test easily
-                            .requestMatchers("/swagger-ui/**").permitAll()
-                            .requestMatchers("/v3/api-docs/**").permitAll()
-                            .requestMatchers("/actuator/**").permitAll()
-                            .requestMatchers(API_URL_PATTERN + "/v1/users/examples").permitAll()
-                            // rest of the api with security
-                            .anyRequest().authenticated();
-                })
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider());
-                //.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return httpSecurity.build();
-    }*/
-
-    // CACHE
+    // ------------- CACHE -------------
     @Bean
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager();
     }
 
-    // VALIDATION
+    // ------------- VALIDATION -------------
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -119,7 +92,7 @@ public class ApplicationConfig {
         return bean;
     }
 
-    // LOCALIZATION
+    // ------------- LOCALIZATION -------------
     /*@Bean
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
